@@ -1,0 +1,16 @@
+body {
+    background-color: lightgrey;
+}
+
+#content {
+    width:80%;
+    margin: 0 auto;
+}
+
+.js-plotly-plot .plot-container .svg-container .main-svg {
+    background: transparent !important;
+}
+
+.js-plotly-plot .plot-container .svg-container .main-svg .legend {
+    border: solid 1px black;
+}

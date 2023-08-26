@@ -1,6 +1,6 @@
 # wakatime-metrics
 
-Python scripts for generating dashboards from wakatime metrics
+Python scripts for generating dashboards from wakatime metrics data.
 
 # Authentication
 
@@ -16,8 +16,17 @@ To develop locally, you should create a file called `.env` with the following co
 WAKATIME_API_KEY=<your api key>
 ```
 
+Now install the dependencies with:
+
+```commandline
+pip3 install -r requirements.txt
+```
+
 Then you can launch the server with:
 
 ```commandline
 python3 main.py
 ```
+
+After launching the server, you can access the dashboard at http://localhost:8080.
+

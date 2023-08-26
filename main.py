@@ -109,9 +109,9 @@ def metrics():
             # Redirect to the index page
             logging.error("WakaTime API key not set")
             return {"status": "failed", "message": "WakaTime API key not set"}
-        except AttributeError:
+        except AttributeError as error_message:
             # Redirect to the index page
-            logging.error("WakaTime API request failed")
+            logging.error("WakaTime API request failed: %s", str(error_message))
             return {"status": "failed", "message": "WakaTime API request failed"}
 
     # Return the JSON response
