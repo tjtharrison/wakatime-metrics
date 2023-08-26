@@ -61,17 +61,10 @@ const updateDiv = (data) => {
     const languagesDiv = "languages-div";
     const editorsDiv = "editors-div";
     const osDiv = "os-div";
-    var layout = {
-      height: 400,
-      width: 500
-    };
-    var data = [{
-      values: [19, 26, 55],
-      labels: ['Residential', 'Non-Residential', 'Utility'],
-      type: 'pie'
-    }];
-    // Submit form to /metrics
+
     const form = document.querySelector('form');
+
+    // Submit form to /metrics
     form.addEventListener('submit', event => {
         event.preventDefault();
         const formData = new FormData(form);
@@ -87,32 +80,32 @@ const updateDiv = (data) => {
             .then(data => {
                 obj = JSON.parse(data.message);
                 document.getElementById(responseDiv).innerHTML = "";
-                document.getElementById(languagesDiv).innerHTML = Plotly.newPlot(languagesDiv, data, layout);
+                const languageMap = splitData(obj.languages);
+                console.log(languageMap);
+                Plotly.newPlot(languagesDiv, languageMap, layout);
                 document.getElementById(editorsDiv).innerHTML = JSON.stringify(obj.editors);
                 document.getElementById(osDiv).innerHTML = JSON.stringify(obj.operating_systems);
                 // If data.status is failed, add a class to the div
-                addClass(data);
+                // addClass(data);
             })
             .then(pollData());
     });
+
+    // Split the data into a map of two arrays
+    function splitData(data) {
+        var labels = [];
+        var values = [];
+        # Write keys to labels and values to values
+        for (var key in data) {
+            labels.push(key);
+            values.push(data[key]);
+        }
+        return {labels: labels, values: values};
+    }
 
 
 </script>
 <footer>
     <script src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
-    <script>
-        var data = [{
-          values: [19, 26, 55],
-          labels: ['Residential', 'Non-Residential', 'Utility'],
-          type: 'pie'
-        }];
-
-        var layout = {
-          height: 400,
-          width: 500
-        };
-
-        Plotly.newPlot('myDiv', data, layout);
-    </script>
 </footer>
 </html>
