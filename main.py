@@ -1,12 +1,12 @@
 """Small Flask server to pull metrics from WakaTime API and display them on a webpage."""
 import base64
-import os
 import json
-import requests
-from flask import Flask, render_template, request, redirect, url_for, jsonify
 import logging
+import os
 
+import requests
 from dotenv import load_dotenv
+from flask import Flask, render_template, request
 
 load_dotenv()
 
@@ -52,17 +52,17 @@ def metrics():
             wakatime_api_response = requests.get(
                 f'https://wakatime.com/api/v1/users/current/stats/{form_data["period"]}',
                 headers={"Authorization": "Basic " + wakatime_api_key_base64_string},
+                timeout=10,
             )
 
             if wakatime_api_response.status_code != 200:
                 raise AttributeError(
-                    f"WakaTime API request failed: wakatime_api_response.status_code={wakatime_api_response.text}"
+                    f"WakaTime API request failed: wakatime_api_response.status_code="
+                    f"{wakatime_api_response.text}"
                 )
 
             # Parse the JSON response
             wakatime_api_response_json = json.loads(wakatime_api_response.text)
-
-            response_data = {}
 
             # process_languages
             languages = []
