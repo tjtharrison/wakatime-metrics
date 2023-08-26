@@ -1,12 +1,12 @@
 """Small Flask server to pull metrics from WakaTime API and display them on a webpage."""
 import base64
-import os
 import json
-import requests
-from flask import Flask, render_template, request, redirect, url_for, jsonify
 import logging
+import os
 
+import requests
 from dotenv import load_dotenv
+from flask import Flask, jsonify, redirect, render_template, request, url_for
 
 load_dotenv()
 
