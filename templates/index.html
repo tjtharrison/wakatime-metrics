@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wakatime metrics</title>
+</head>
+<body>
+<h1>Wakatime metrics</h1>
+<p>Please select the period of time you wish to get metrics from</p>
+<form action="#" onsubmit="">
+    <select name="period">
+        <option value="last_7_days">Last 7 days</option>
+        <option value="last_30_days">Last 30 days</option>
+        <option value="last_6_months">Last 6 months</option>
+        <option value="last_year">Last year</option>
+    </select>
+    <input type="submit" value="Submit">
+</form>
+<div id="response-div"></div>
+<div id="languages-div"></div>
+<div id="editors-div"></div>
+<div id="os-div"></div>
+<div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+<div id="status-div"></div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.4/fetch.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+</body>
+
+<script>
+// Get metrics
+const apiEndpoint = "/metrics";
+const responseDiv = "response-div";
+const statusDiv = "status-div";
+
+const pollData = () => {
+  fetch(apiEndpoint)
+    .then(response => response.json())
+    .then(data => {
+        updateDiv(data);
+    });
+};
+
+// If data.status is failed, add a class to the div
+const updateDiv = (data) => {
+  if (data.status === "failed") {
+    document.getElementById(responseDiv).classList.add("alert-danger");
+    document.getElementById(responseDiv).classList.add("alert-success");
+    document.getElementById(statusDiv).innerHTML = `Something went wrong: ${data.message}`;
+  }
+  else {
+    document.getElementById(responseDiv).innerHTML = "Processing metrics";
+    document.getElementById(statusDiv).classList.remove("alert-danger");
+    document.getElementById(statusDiv).classList.add("alert-success");
+    document.getElementById(statusDiv).innerHTML = "Metrics received successfully";
+  }
+};
+
+</script>
+<script>
+    const languagesDiv = "languages-div";
+    const editorsDiv = "editors-div";
+    const osDiv = "os-div";
+    var layout = {
+      height: 400,
+      width: 500
+    };
+    var data = [{
+      values: [19, 26, 55],
+      labels: ['Residential', 'Non-Residential', 'Utility'],
+      type: 'pie'
+    }];
+    // Submit form to /metrics
+    const form = document.querySelector('form');
+    form.addEventListener('submit', event => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const searchParams = new URLSearchParams();
+        for (const pair of formData) {
+            searchParams.append(pair[0], pair[1]);
+        }
+        fetch('/metrics', {
+            method: 'POST',
+            body: searchParams
+        })
+            .then(response => response.json())
+            .then(data => {
+                obj = JSON.parse(data.message);
+                document.getElementById(responseDiv).innerHTML = "";
+                document.getElementById(languagesDiv).innerHTML = Plotly.newPlot(languagesDiv, data, layout);
+                document.getElementById(editorsDiv).innerHTML = JSON.stringify(obj.editors);
+                document.getElementById(osDiv).innerHTML = JSON.stringify(obj.operating_systems);
+                // If data.status is failed, add a class to the div
+                addClass(data);
+            })
+            .then(pollData());
+    });
+
+
+</script>
+<footer>
+    <script src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
+    <script>
+        var data = [{
+          values: [19, 26, 55],
+          labels: ['Residential', 'Non-Residential', 'Utility'],
+          type: 'pie'
+        }];
+
+        var layout = {
+          height: 400,
+          width: 500
+        };
+
+        Plotly.newPlot('myDiv', data, layout);
+    </script>
+</footer>
+</html>
