@@ -16,14 +16,22 @@ app = Flask(__name__)
 # Create / endpoint
 @app.route("/")
 def index():
-    """Index page."""
+    """Index page.
+
+    Returns:
+        str: The rendered index.html template.
+    """
     return render_template("index.html")
 
 
 # Metrics endpoint
 @app.route("/metrics", methods=["GET", "POST"])
 def metrics():
-    """Metrics page."""
+    """Metrics page.
+
+    Returns:
+        str: The rendered metrics.html template.
+    """
     # If the request is a POST request
     if request.method == "POST":
         # Get the form data
